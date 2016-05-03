@@ -160,7 +160,7 @@ angular.module('conFusion.controllers', [])
         }])
 
 
-        .controller('DishDetailController', ['$scope', '$ionicPopover', '$ionicModal', '$timeout', '$stateParams', 'menuFactory', 'baseURL', function($scope, $ionicPopover, $ionicModal, $timeout, $stateParams, menuFactory, baseURL) {
+.controller('DishDetailController', ['$scope', '$ionicPopover', '$ionicModal', '$timeout', '$stateParams', 'favoriteFactory', 'menuFactory', 'baseURL', function($scope, $ionicPopover, $ionicModal, $timeout, $stateParams, favoriteFactory, menuFactory, baseURL) {
 
             $scope.baseURL = baseURL;
             $scope.dish = {};
@@ -168,11 +168,13 @@ angular.module('conFusion.controllers', [])
             $scope.message="Loading ...";
             $scope.mycomment = {rating: 5, comment: "", author: "", date: ""};
 
-            $scope.addFavorite = function(){
+
+            $scope.addFavorite = function(index){
               favoriteFactory.addToFavorites($scope.dish.id);
               console.log("Favorite added");
               $scope.popover.hide();
             };
+
 
             $scope.dish = menuFactory.getDishes().get({id:parseInt($stateParams.id,10)})
             .$promise.then(
@@ -192,54 +194,61 @@ angular.module('conFusion.controllers', [])
             $scope.popover = popover;
           });
 
-          $scope.openPopover = function($event) {
+         $scope.openPopover = function($event) {
+            console.log('Open popover');
             $scope.popover.show($event);
           };
           $scope.closePopover = function() {
+            console.log('Closing popover');
             $scope.popover.hide();
           };
-          // popover ends here
+          //Cleanup the popover when we're done with it!
+          $scope.$on('$destroy', function() {
+            $scope.popover.remove();
+          });
+          // Execute action on hide popover
+          $scope.$on('popover.hidden', function() {
+            // Execute action
+          });
+          // Execute action on remove popover
+          $scope.$on('popover.removed', function() {
+            // Execute action
+          });
+          // popover ends
 
 
-          // comment modal starts here
+          // Comment modal starts here
             $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
               scope: $scope
             }).then(function(modal){
-              $scope.modal = modal;
+              $scope.commentmodal = modal;
             });
 
-            $scope.closeComment = function(){
-              $scope.modal.hide();
-              $scope.popover.hide();
-            };
+            $scope.addComment = function() {
+                $scope.commentmodal.show();
+                $scope.popover.hide();
+              };
 
-            $scope.addComment = function(){
-              $scope.modal.show();
-            };
+            $scope.closeComment = function() {
+                console.log('Closing modal');
+                $scope.commentmodal.hide();
+              };
 
             $scope.submitComment = function() {
-
               $scope.mycomment.date = new Date().toISOString();
               $scope.mycomment.rating = parseInt($scope.mycomment.rating, 10);
-              console.log('Submitting comment', $scope.mycomment);
+              console.log('Comment submitted', $scope.mycomment);
               $scope.dish.comments.push($scope.mycomment);
-              menuFactory.update({id:$scope.dish.id}, $scope.dish);
-              $scope.modal.hide();
-              $scope.popover.hide();
-              // set timeout
-                $timeout(function() {
-                         $scope.closeComment();
-                    }, 1000);
-
+              $scope.commentmodal.hide();
             };
+        // comment modal ends
+
+
+    }])
 
 
 
-        }])
-
-
-
-        .controller('DishCommentController', ['$scope', 'menuFactory', function($scope,menuFactory) {
+.controller('DishCommentController', ['$scope', 'menuFactory', function($scope,menuFactory) {
 
             $scope.mycomment = {rating:5, comment:"", author:"", date:""};
 
@@ -288,7 +297,7 @@ angular.module('conFusion.controllers', [])
                     }])
 
         //This code got changed in Lesson3
-        .controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout', function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
+.controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout', function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
 
             $scope.baseURL = baseURL;
             $scope.shouldShowDelete = false;
