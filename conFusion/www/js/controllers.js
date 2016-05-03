@@ -168,14 +168,14 @@ angular.module('conFusion.controllers', [])
             $scope.message="Loading ...";
             $scope.mycomment = {rating: 5, comment: "", author: "", date: ""};
 
-
+            //favoriteFactory dependency injection is needed for this to work
             $scope.addFavorite = function(index){
               favoriteFactory.addToFavorites($scope.dish.id);
               console.log("Favorite added");
               $scope.popover.hide();
             };
 
-
+            //menuFactory dependency injection is needed for this to work
             $scope.dish = menuFactory.getDishes().get({id:parseInt($stateParams.id,10)})
             .$promise.then(
                             function(response){
