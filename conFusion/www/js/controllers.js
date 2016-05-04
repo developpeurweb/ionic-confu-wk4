@@ -84,7 +84,7 @@ angular.module('conFusion.controllers', [])
             $scope.showMenu = false;
             $scope.message = "Loading ...";
 
-            menuFactory.getDishes().query(
+            menuFactory.query(
                 function(response) {
                     $scope.dishes = response;
                     $scope.showMenu = true;
@@ -160,7 +160,7 @@ angular.module('conFusion.controllers', [])
         }])
 
 
-.controller('DishDetailController', ['$scope', '$ionicPopover', '$ionicModal', '$timeout', '$stateParams', 'favoriteFactory', 'menuFactory', 'baseURL', function($scope, $ionicPopover, $ionicModal, $timeout, $stateParams, favoriteFactory, menuFactory, baseURL) {
+.controller('DishDetailController', ['$scope', '$stateParams', 'dish', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicPopover', '$ionicModal', function ($scope, $stateParams, dish, menuFactory, favoriteFactory, baseURL, $ionicPopover, $ionicModal) {
 
             $scope.baseURL = baseURL;
             $scope.dish = {};
@@ -175,17 +175,8 @@ angular.module('conFusion.controllers', [])
               $scope.popover.hide();
             };
 
-            //menuFactory dependency injection is needed for this to work
-            $scope.dish = menuFactory.getDishes().get({id:parseInt($stateParams.id,10)})
-            .$promise.then(
-                            function(response){
-                                $scope.dish = response;
-                                $scope.showDish = true;
-                            },
-                            function(response) {
-                                $scope.message = "Error: "+response.status + " " + response.statusText;
-                            }
-            );
+            //code updated Lesson1 from Week3
+            $scope.dish = dish;
 
           // popover.fromTemplateUrl() method
           $ionicPopover.fromTemplateUrl('templates/dish-detail-popover.html', {
@@ -258,7 +249,7 @@ angular.module('conFusion.controllers', [])
                 console.log($scope.mycomment);
 
                 $scope.dish.comments.push($scope.mycomment);
-        menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
+        menuFactory.update({id:$scope.dish.id},$scope.dish);
 
                 $scope.commentForm.$setPristine();
 
@@ -268,27 +259,40 @@ angular.module('conFusion.controllers', [])
 
 
 
-    // implement the IndexController and About Controller here
-    .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'baseURL', function($scope, menuFactory, corporateFactory, baseURL) {
+// implement the IndexController
+.controller('IndexController', ['$scope', 'menuFactory', 'promotionFactory', 'corporateFactory', 'baseURL', function ($scope, menuFactory, promotionFactory, corporateFactory, baseURL) {
 
-                        $scope.baseURL = baseURL;
-                        $scope.leader = corporateFactory.get({id:3});
-                        $scope.showDish = false;
-                        $scope.message="Loading ...";
-                        $scope.dish = menuFactory.getDishes().get({id:0})
-                        .$promise.then(
-                            function(response){
-                                $scope.dish = response;
-                                $scope.showDish = true;
-                            },
-                            function(response) {
-                                $scope.message = "Error: "+response.status + " " + response.statusText;
-                            }
-                        );
-                        $scope.promotion = menuFactory.getPromotion().get({id:0});
-      }])
+    $scope.baseURL = baseURL;
+    $scope.leader = corporateFactory.get({
+        id: 3
+    });
 
-        .controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function($scope, corporateFactory, baseURL) {
+    $scope.showDish = false;
+    $scope.message = "Loading ...";
+
+    $scope.dish = menuFactory.get({
+            id: 0
+        })
+        .$promise.then(
+            function (response) {
+                $scope.dish = response;
+                $scope.showDish = true;
+            },
+            function (response) {
+                $scope.message = "Error: " + response.status + " " + response.statusText;
+            }
+        );
+
+    $scope.promotion = promotionFactory.get({
+        id: 0
+    });
+
+}])
+
+
+
+//and About Controller here
+.controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function($scope, corporateFactory, baseURL) {
 
                     $scope.baseURL = baseURL;
                     $scope.leaders = corporateFactory.query();
@@ -296,21 +300,19 @@ angular.module('conFusion.controllers', [])
 
                     }])
 
-        //This code got changed in Lesson3
-.controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout', function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
+//This code got changed in Lesson1 from Week3
+.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout', function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
 
             $scope.baseURL = baseURL;
             $scope.shouldShowDelete = false;
 
-            //New spinner from Lesson3
-            $ionicLoading.show({
-                    template: '<ion-spinner></ion-spinner> Loading...'
-            });
+            $scope.favorites = favorites;
 
-            $scope.favorites = favoriteFactory.getFavorites();
+            $scope.dishes = dishes;
+
 
             //Code update in Lesson3 to simulate spinner
-            $scope.dishes = menuFactory.getDishes().query(
+            $scope.dishes = menuFactory.query(
                 function (response) {
                     $scope.dishes = response;
                     $timeout(function () {
