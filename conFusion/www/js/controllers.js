@@ -85,6 +85,7 @@ angular.module('conFusion.controllers', [])
             $scope.showMenu = false;
             $scope.message = "Loading ...";
 
+            /*
             menuFactory.query(
                 function(response) {
                     $scope.dishes = response;
@@ -93,7 +94,8 @@ angular.module('conFusion.controllers', [])
                 function(response) {
                     $scope.message = "Error: "+response.status + " " + response.statusText;
                 });
-
+                */
+            $scope.dishes = dishes;
 
             $scope.select = function(setTab) {
                 $scope.tab = setTab;
@@ -261,16 +263,19 @@ angular.module('conFusion.controllers', [])
 
 
 // implement the IndexController
-.controller('IndexController', ['$scope', 'menuFactory', 'promotionFactory', 'corporateFactory', 'baseURL', function ($scope, menuFactory, promotionFactory, corporateFactory, baseURL) {
+.controller('IndexController', ['$scope', 'menuFactory', 'leader', 'dish', 'promotion', 'promotionFactory', 'corporateFactory', 'baseURL', function($scope, menuFactory, leader, dish, promotion, promotionFactory, corporateFactory, baseURL) {
 
     $scope.baseURL = baseURL;
+    $scope.leader = leader;
+    /*
     $scope.leader = corporateFactory.get({
         id: 3
-    });
-
+    });*/
     $scope.showDish = false;
     $scope.message = "Loading ...";
-
+    $scope.dish = dish;
+    $scope.promotion = promotion;
+    /*
     $scope.dish = menuFactory.get({
             id: 0
         })
@@ -287,32 +292,36 @@ angular.module('conFusion.controllers', [])
     $scope.promotion = promotionFactory.get({
         id: 0
     });
+    */
 
 }])
 
 
 
 //and About Controller here
-.controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function($scope, corporateFactory, baseURL) {
+.controller('AboutController', ['$scope', 'corporateFactory', 'leaderlist', '$stateParams', 'baseURL', function($scope, corporateFactory, leaderlist, $stateParams, baseURL) {
 
-                    $scope.baseURL = baseURL;
-                    $scope.leaders = corporateFactory.query();
-                    console.log($scope.leaders);
+              $scope.baseURL = baseURL;
+              $scope.showLeaders = false;
+              $scope.message = 'Loading ...';
+              $scope.leaders = leaderlist;
+
+            /*$scope.leaders = corporateFactory.query();*/
+              console.log($scope.leaders);
 
                     }])
 
 //This code got changed in Lesson1 from Week3
-.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPopup', '$ionicLoading', '$timeout', function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
+.controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate','$ionicPopup', '$ionicLoading', '$timeout', function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
 
             $scope.baseURL = baseURL;
             $scope.shouldShowDelete = false;
-
             $scope.favorites = favorites;
-
             $scope.dishes = dishes;
 
 
             //Code update in Lesson3 to simulate spinner
+            /* Now we remove the spinner
             $scope.dishes = menuFactory.query(
                 function (response) {
                     $scope.dishes = response;
@@ -326,7 +335,7 @@ angular.module('conFusion.controllers', [])
                         $ionicLoading.hide();
                     }, 1000);
                 });
-
+                */
 
             console.log($scope.dishes, $scope.favorites);
 
