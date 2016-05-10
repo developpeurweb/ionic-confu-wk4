@@ -76,7 +76,7 @@ angular.module('conFusion.controllers', [])
 })
 
 
-    .controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
+.controller('MenuController', ['$scope', 'dishes', 'menuFactory', 'favoriteFactory','baseURL','$ionicListDelegate', function($scope, dishes, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
 
             $scope.baseURL = baseURL;
             $scope.tab = 1;
@@ -85,16 +85,6 @@ angular.module('conFusion.controllers', [])
             $scope.showMenu = false;
             $scope.message = "Loading ...";
 
-            /*
-            menuFactory.query(
-                function(response) {
-                    $scope.dishes = response;
-                    $scope.showMenu = true;
-                },
-                function(response) {
-                    $scope.message = "Error: "+response.status + " " + response.statusText;
-                });
-                */
             $scope.dishes = dishes;
 
             $scope.select = function(setTab) {
@@ -127,8 +117,9 @@ angular.module('conFusion.controllers', [])
                 console.log("index is " + index);
                 favoriteFactory.addToFavorites(index);
                 $ionicListDelegate.closeOptionButtons();
-            } //no semi-colon at the end?
+            };
         }])
+
 
         .controller('ContactController', ['$scope', function($scope) {
 
@@ -140,6 +131,7 @@ angular.module('conFusion.controllers', [])
             $scope.invalidChannelSelection = false;
 
         }])
+
 
         .controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope,feedbackFactory) {
 
@@ -262,80 +254,40 @@ angular.module('conFusion.controllers', [])
 
 
 
-// implement the IndexController
 .controller('IndexController', ['$scope', 'menuFactory', 'leader', 'dish', 'promotion', 'promotionFactory', 'corporateFactory', 'baseURL', function($scope, menuFactory, leader, dish, promotion, promotionFactory, corporateFactory, baseURL) {
 
     $scope.baseURL = baseURL;
-    $scope.leader = leader;
-    /*
-    $scope.leader = corporateFactory.get({
-        id: 3
-    });*/
     $scope.showDish = false;
     $scope.message = "Loading ...";
+
     $scope.dish = dish;
     $scope.promotion = promotion;
-    /*
-    $scope.dish = menuFactory.get({
-            id: 0
-        })
-        .$promise.then(
-            function (response) {
-                $scope.dish = response;
-                $scope.showDish = true;
-            },
-            function (response) {
-                $scope.message = "Error: " + response.status + " " + response.statusText;
-            }
-        );
+    $scope.leader = leader;
 
-    $scope.promotion = promotionFactory.get({
-        id: 0
-    });
-    */
 
 }])
 
 
-
-//and About Controller here
-.controller('AboutController', ['$scope', 'corporateFactory', 'leaderlist', '$stateParams', 'baseURL', function($scope, corporateFactory, leaderlist, $stateParams, baseURL) {
+.controller('AboutController', ['$scope', 'corporateFactory', 'leaders', '$stateParams', 'baseURL', function($scope, corporateFactory, leaders, $stateParams, baseURL) {
 
               $scope.baseURL = baseURL;
               $scope.showLeaders = false;
               $scope.message = 'Loading ...';
-              $scope.leaders = leaderlist;
+              $scope.leaders = leaders;
 
-            /*$scope.leaders = corporateFactory.query();*/
               console.log($scope.leaders);
 
-                    }])
+}])
 
 //This code got changed in Lesson1 from Week3
 .controller('FavoritesController', ['$scope', 'dishes', 'favorites', 'favoriteFactory', 'baseURL', '$ionicListDelegate','$ionicPopup', '$ionicLoading', '$timeout', function ($scope, dishes, favorites, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
 
             $scope.baseURL = baseURL;
             $scope.shouldShowDelete = false;
+
             $scope.favorites = favorites;
             $scope.dishes = dishes;
 
-
-            //Code update in Lesson3 to simulate spinner
-            /* Now we remove the spinner
-            $scope.dishes = menuFactory.query(
-                function (response) {
-                    $scope.dishes = response;
-                    $timeout(function () {
-                        $ionicLoading.hide();
-                    }, 1000);
-                },
-                function (response) {
-                    $scope.message = "Error: " + response.status + " " + response.statusText;
-                    $timeout(function () {
-                        $ionicLoading.hide();
-                    }, 1000);
-                });
-                */
 
             console.log($scope.dishes, $scope.favorites);
 

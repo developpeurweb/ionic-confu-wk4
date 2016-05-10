@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.services'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope, $ionicLoading) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -20,28 +20,53 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
       StatusBar.styleDefault();
     }
   });
+
+    //Updte run method Lesson1-Week3
+
+    $rootScope.$on('loading:show', function () {
+        $ionicLoading.show({
+            template: '<ion-spinner></ion-spinner> Loading ...'
+        })
+    });
+
+    $rootScope.$on('loading:hide', function () {
+        $ionicLoading.hide();
+    });
+
+    $rootScope.$on('$stateChangeStart', function () {
+        console.log('Loading ...');
+        $rootScope.$broadcast('loading:show');
+    });
+
+    $rootScope.$on('$stateChangeSuccess', function () {
+        console.log('done');
+        $rootScope.$broadcast('loading:hide');
+    });
+
 })
 
 
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
-  .state('app', {
+.state('app', {
     url: '/app',
     abstract: true,
     templateUrl: 'templates/sidebar.html',
     controller: 'AppCtrl'
   })
 
-  .state('app.home', {
+
+.state('app.home', {
     url: '/home',
     views: {
       'mainContent': {
         templateUrl: 'templates/home.html',
         controller: 'IndexController',
         resolve: {
+            //Here we GET each element
             dish:  ['menuFactory', function(menuFactory){
-                return menuFactory.query({id: 0});
+                return menuFactory.get({id: 0});
             }],
             promotion: ['promotionFactory', function(promotionFactory){
                 return promotionFactory.get({id: 0});
@@ -54,22 +79,23 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
     }
   })
 
-  .state('app.aboutus', {
+.state('app.aboutus', {
       url: '/aboutus',
       views: {
         'mainContent': {
           templateUrl: 'templates/aboutus.html',
           controller: 'AboutController',
           resolve: {
-                leaderlist: ['corporateFactory', function(corporateFactory){
-                    return corporateFactory.get();
+            //Here we QUERY all elements
+            leaders: ['corporateFactory', function(corporateFactory){
+                    return corporateFactory.query();
                 }]
-            }
+          }
         }
       }
     })
 
-   .state('app.contactus', {
+.state('app.contactus', {
       url: '/contactus',
       views: {
         'mainContent': {
@@ -93,6 +119,7 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
       }
     })
 
+  //Lesson1-Week3 Update
    .state('app.favorites', {
       url: '/favorites',
       views: {
