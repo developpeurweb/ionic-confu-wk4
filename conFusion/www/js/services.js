@@ -1,9 +1,8 @@
-//Ionic Assignment #3
 'use strict';
 
 angular.module('conFusion.services', ['ngResource'])
 
-    .constant("baseURL","http://localhost:3000/")
+    .constant("baseURL","http://205.151.62.148:3000/")
 
     .factory('menuFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
