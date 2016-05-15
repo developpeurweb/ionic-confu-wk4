@@ -1,5 +1,6 @@
 {
     "jscodehints.detectedExclusions": [
-        "C:/Users/Developer/Documents/eLearning/Coursera/Full Stack Web Developer/hybrid-mobile-development/week1/ionic/conFusion/www/js/controllers.js"
+        "C:/Users/Developer/Documents/eLearning/Coursera/Full Stack Web Developer/hybrid-mobile-development/week1/ionic/conFusion/www/js/controllers.js",
+        "C:/Users/Developer/Documents/eLearning/Coursera/Full Stack Web Developer/hybrid-mobile-development/week1/ionic/conFusion/platforms/android/cordova/lib/build.js"
     ]
 }
